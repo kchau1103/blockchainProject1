@@ -1,33 +1,29 @@
 // ./index.js
 // * Imports
-const express = require("express"); // Imports Express's class definition
-const morgan = require("morgan"); // Imports Morgan's class definition
+const express = require("express"); // Imports Express
+const morgan = require("morgan"); // Imports Morgan
 
-// Initialize express's class object
-const app = express();
-// Tell Express to use Morgan for logging requests to the console
-app.use(morgan("dev")); // Pretty-print requests with the "dev" format
 
-// Create the port number for the server to listen on
-const port = 8080; // See: Wikipedia's List of TCP and UDP port numbers
+const app = express();//initialize express class object as a constant
+app.use(morgan("dev")); // use morgan to log requests. dev format to pretty print
 
-// Dynamically load all routes from the ./routes folder
-require("./routes")(app);
 
-// Imports from our class modules
+const port = 8080; // 8080 port number
 
-const Blockchain = require("./src/blockchain");
+
+require("./routes")(app);//loud routes from routes folder
+
+const Blockchain = require("./src/blockchain");//import blockchain from ./src/blockchain
 
 // Global variables
 
 global.difficulty = 5; // Difficulty to mine a particular block
 
-global.blockchain = new Blockchain(); // Our copy of the blockchain
+global.blockchain = new Blockchain(); // copy of the blockchain
 
 global.transactions = []; // Our current transactions
 
 // Configure our server to run
 app.listen(port, () => {
-    // Log that our server is running in the terminal
-    console.log(`Server is listening at http://localhost:${port}/`);
+    console.log(`Server is listening at http://localhost:${port}/`); //show running server on terminal
 });

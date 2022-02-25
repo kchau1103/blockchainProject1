@@ -1,148 +1,58 @@
 // ./src/blockchain.js
 
-// * Contains the class definition for a blockchain.
-
-
-
-// * Imports
-
-const Block = require("./block"); // Our class definition for a block
-
-
+const Block = require("./block"); //block definition
 
 class Blockchain {
-
     constructor() {
-
-        // Chain array contains all blocks in our copy of the blockchain
-
-        this.chain = [new Block(Array(65).join("0"))]; // Create genesis block
-
+        this.chain = [new Block(Array(65).join("0"))]; // chain array with all blocks and create genesis block
     }
-    // Returns the last block in the chain
-
     getLastBlock() {
-
-        return this.chain[this.chain.length - 1];
-
+        return this.chain[this.chain.length - 1];// Returns last block in the chain
     }
-    // Returns the length of our chain
 
      getChainLength() {
-
-        return this.chain.length;
-
+        return this.chain.length;// Returns length of our chain
     }
-    // Adds a new block to the chain
 
-    addBlock() {
-
-        // Mine a new block with the previous block's hash
-
-        let newBlock = new Block(this.getLastBlock().hash, global.transactions);
-
-
-
-        // Let's add the new block to the chain, and make it immutable
-
-        this.chain.push(Object.freeze(newBlock));
-
+    addBlock() {// Adds a new block to the chain
+        let newBlock = new Block(this.getLastBlock().hash, global.transactions);// Mine a new block with the previous block's hash
+        this.chain.push(Object.freeze(newBlock));// add new unchangable block to the chain
     }
-    // Validates the chain
-
-    isChainValid(blockchain = this) {
-
-        // Iterate over the chain, skipping the genesis block (i=1)
-
-        for (let i = 1; i < blockchain.chain.length; i++) {
-
+    isChainValid(blockchain = this) {// Validates the chain
+        for (let i = 1; i < blockchain.chain.length; i++) { //loop through chain, skipping genesis
             const currentBlock = blockchain.chain[i];
-
             const prevBlock = blockchain.chain[i - 1];
-
-
-
-            // Validate the current block's hash from the previous
-
-            if (
-
-                // Check the hash, which was mined
-
+            
+            if ( //validate hashes
+                // Check current hash
                 currentBlock.hash !== currentBlock.getHash() ||
-
-                // Check that the current block's prevHash matches
-
+                // Check if previous hash matches
                 prevBlock.hash !== currentBlock.prevHash
-
             ) {
-
                 return false;
-
             }
-
-
-
-            // Check the hash validity
-
+            
             let checkString = Array(global.difficulty + 1).join("0");
-
-            if (!currentBlock.hash.startsWith(checkString)) {
-
+            if (!currentBlock.hash.startsWith(checkString)) {// Check the hash validity
                 return false;
-
             }
-
         }
-
-
-
-        // At this point, all the blocks in the chain line up with hashes
-
-        //  so the chain is valid
-
         return true;
-
     }
-    // Update the chain with a new blockchain
 
-    replaceChain(newChain) {
-
-        // Check the length of the new chain
-
-        if (newChain.length <= this.chain.length) return;
-
-
-
-        // Check that the new chain is valid
-
-        if (!this.isChainValid(newChain)) return;
-
-
-
-        // The new chain is valid, and longer, so let's replace ours
-
-        this.chain = newChain;
-
+    replaceChain(newChain) { //update with new blockchain
+        if (newChain.length <= this.chain.length) return; //check length of chain
+        if (!this.isChainValid(newChain)) return;//check valid chain
+        this.chain = newChain;//replace chain
     }
-    // Returns a string representation of the blockchain
 
-    prettify() {
-
+    prettify() {//pretty print chain
         let chainStr = "";
-
         for (let i = 0; i < this.chain.length; i++) {
-
             chainStr += this.chain[i].prettify();
-
             chainStr += "<br><hr>";
-
         }
-
         return chainStr;
-
     }
-
 }
-// Export this object to be used elsewhere
-
-module.exports = Blockchain;
+module.exports = Blockchain;//export so we can use in other files
